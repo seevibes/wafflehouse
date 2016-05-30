@@ -1,41 +1,50 @@
-# Svconnectors
+# Seevibes Connectors
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/svconnectors`. To experiment with that code, run `bin/console` for an interactive prompt.
+These are the Seevibes Connectors, a collection of libraries that ease our burden when connecting to external services.
 
-TODO: Delete this and the text above, and describe your gem
+# Usage
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'svconnectors'
+```
+git clone git@github.com:seevibes/svconnectors.git
+cd svconnectors
+bundle install
+bundle exec rspec
 ```
 
-And then execute:
+# Architecture
 
-    $ bundle
+## The Seevibes Protocol
 
-Or install it yourself as:
+Since Ruby does not have the concept of an interface, we have to fake this. The best way we have is to write some tests
+that will guide you. Of course, the tests will be insufficient, since the tests can only indicate the presence of required
+methods. Your job will be to implement the methods that the Seevibes Protocol expects.
 
-    $ gem install svconnectors
+### Connecting Connectors
 
-## Usage
+When the Seevibes Platform receives a request to connect a connector, we start by going through the OAuth flow. When the
+OmniAuth callback fires (in the Seevibes Platform code), your code will start to execute. The methods you have to implement
+are:
 
-TODO: Write usage instructions here
+1. Class-level `.call(omniauth_params, omniauth_auth)`: instead of calling `#new`, we prefer to `#call` into your code.
+    This allows you to return a subclass, if that is required for the connector.
 
-## Development
+2. `#description`:         Returns a plain-text description of the connection. The text won't be localized.
+                           Returning the account's name is a perfectly valid option, as well as the empty string.
+                           Must not return nil; the empty string is an acceptable return value.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+3. `#account_identifiers`: Returns a Ruby Hash that describes the account to which this instance is connected.
+                           This exact Hash (after serialization to JSON) will be provided to the Dispatcher.
+                           Must not return nil; the empty hash is an acceptable return value.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/svconnectors. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+4. `#credential_details`:  Returns a Ruby Hash with all the information needed to make API calls later.
+                           This exact Hash (after serialization to JSON) will be provided to the Dispatcher.
+                           Must not return nil; the empty hash is an acceptable return value.
 
 
-## License
+## Reference Implementations
 
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Please see the implementations of the Mailchimp, Shopify and Hubspot connectors for inspiration.
 
+# License
+
+The code in this library is Copyright 2016, Technologies Seevibes Inc.
