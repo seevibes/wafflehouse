@@ -64,13 +64,16 @@ APIs. The required protocol interface is:
     This is the sole required method in the Dispatcher protocol. It's purpose is to handle the retry and rate limit
     logic, and shield the downloaders from those details.
 
+    Note that the only caller of your `#dispatch` method is the corresponding `Downloader`. You can change this the
+    parameters list as you see fit.
+
 
 ## The Seevibes Downloader Protocol
 
 Instances of the Downloader Protocol are responsible for enumerating mailing lists and emails in a list. The required
 protocol interface is:
 
-1. Class-level `.call(account_identifiers:, credential_details:)`:
+1. Class-level `.call(dispatcher:)`:
     Instead of calling `#new`, we prefer to `#call` into your code.
     This allows you to return a subclass, if that is required for the connector.
 
