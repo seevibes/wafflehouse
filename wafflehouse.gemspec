@@ -1,17 +1,17 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'svconnectors/version'
+require "wafflehouse/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "svconnectors"
-  spec.version       = Svconnectors::VERSION
+  spec.name          = "wafflehouse"
+  spec.version       = Wafflehouse::VERSION
   spec.authors       = ["François Beausoleil"]
   spec.email         = ["francois@seevibes.com"]
 
   spec.summary       = %q{Seevibes Connectors}
   spec.description   = %q{A library that holds connectors we use to connect to multiple services.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/seevibes/wafflehouse"
   spec.license       = "UNLICENSED"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

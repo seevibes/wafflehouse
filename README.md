@@ -5,8 +5,8 @@ These are the Seevibes Connectors, a collection of libraries that ease our burde
 # Usage
 
 ```
-git clone git@github.com:seevibes/svconnectors.git
-cd svconnectors
+git clone git@github.com:seevibes/wafflehouse.git
+cd wafflehouse
 bundle install
 bundle exec rspec
 ```
