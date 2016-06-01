@@ -2,18 +2,38 @@ require "seevibes/external_service/hubspot_dispatcher"
 
 module ExternalService
   class HubspotDownloader
-    def initialize(dispatcher:nil, logger:nil)
+    def initialize(dispatcher:, logger:nil)
+      raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
+
       @dispatcher = dispatcher
       @logger     = logger || respond_to?(:logger) ? logger : nil
     end
 
     def each_list(&block)
-      return to_enum(:each_block) unless block
+      return to_enum(:each_list) unless block
 
       raise "TODO: implement this method"
     end
 
     def each_email(id:, &block)
+      HubspotInternalDownloader.new(dispatcher: dispatcher, id: id, logger: logger).each_email(&block)
+    end
+
+    private
+
+    attr_reader :refresh_token, :dispatcher
+  end
+
+  class HubspotInternalDownloader
+    def initialize(dispatcher:, id:, logger:nil)
+      raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
+
+      @dispatcher = dispatcher
+      @id         = id
+      @logger     = logger || respond_to?(:logger) ? logger : nil
+    end
+
+    def each_email(&block)
       return to_enum(:each_email) unless block
 
       logger && logger.info("Download Hubspot Contact List #{external_id.inspect}")
@@ -37,6 +57,6 @@ module ExternalService
 
     private
 
-    attr_reader :refresh_token, :dispatcher
+    attr_reader :refresh_token, :id, :dispatcher
   end
 end
