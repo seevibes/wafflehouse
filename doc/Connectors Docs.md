@@ -19,10 +19,10 @@ Your role will consist in the following steps:
 
 Since Ruby does not have the concept of an interface, we have to fake this. The best way we have is to write some tests
 that will guide you. Of course, the tests will be insufficient, since the tests can only indicate the presence of required
-methods. Your job will be to implement the methods that the Seevibes Protocol expects.
+methods. Your job will be to implement the methods that the Seevibes Protocols expects.
 
 
-## Protocols
+## Seevibes Protocols
 
 
 ### The Seevibes Connector Protocol
@@ -31,7 +31,7 @@ When the Seevibes Platform receives a request to connect a connector, we start b
 OmniAuth callback fires (in the Seevibes Platform code), your code will start to execute. The methods you have to implement
 are:
 
-1. Class-level `.call(omniauth_params:, omniauth_auth:)`:
+1. Class-level `.call(omniauth_params:, omniauth_auth:, logger:)`:
     Instead of calling `#new`, we prefer to `#call` into your code.
     This allows you to return a subclass, if that is required for the connector.
 
@@ -56,16 +56,16 @@ are:
 Instances of the Dispatcher Protocol are responsible for handling retries and rate limits with regards to remote
 APIs. The required protocol interface is:
 
-1. Class-level `.call(account_identifiers:, credential_details:)`:
+1. Class-level `.call(account_identifiers:, credential_details:, logger:)`:
     Instead of calling `#new`, we prefer to `#call` into your code.
     This allows you to return a subclass, if that is required for the connector.
 
-2. `#dispatch(method, path)`
+2. `#dispatch(method, path, params={})`
     This is the sole required method in the Dispatcher protocol. It's purpose is to handle the retry and rate limit
     logic, and shield the downloaders from those details.
 
-    Note that the only caller of your `#dispatch` method is the corresponding `Downloader`. You can change this the
-    parameters list as you see fit.
+    Note that the only caller of your `#dispatch` method is the corresponding `Downloader`. You can change the method's
+    signature as you wish.
 
 
 ## The Seevibes Downloader Protocol
@@ -73,7 +73,7 @@ APIs. The required protocol interface is:
 Instances of the Downloader Protocol are responsible for enumerating mailing lists and emails in a list. The required
 protocol interface is:
 
-1. Class-level `.call(dispatcher:)`:
+1. Class-level `.call(dispatcher:, logger:)`:
     Instead of calling `#new`, we prefer to `#call` into your code.
     This allows you to return a subclass, if that is required for the connector.
 
