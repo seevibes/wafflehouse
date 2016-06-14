@@ -6,10 +6,9 @@ module ExternalService
   class MailchimpDispatcher < RestClientDispatcher
     MAILCHIMP_API_URL = "api.mailchimp.com/3.0"
 
-    def initialize(account_identifiers:, credential_details:, sleep_time_seconds: 5, client: RestClient)
+    def initialize(credential_details:, sleep_time_seconds: 5, client: RestClient)
       @api_key = credential_details.fetch("api_key")
       @client  = client
-      @account_identifiers = account_identifiers
 
       super(sleep_time_seconds)
     end
