@@ -12,7 +12,17 @@ module ExternalService
     def each_list(&block)
       return to_enum(:each_list) unless block
 
-      raise "TODO: implement this method"
+      offset = 0
+      dispatcher = ExternalService::HubspotDispatcher.new(options[:refresh_token])
+      loop do
+        response = dispatcher.dispatch(:get, "/contacts/v1/lists?count=1000&offset=#{offset}").deep_symbolize_keys
+        response[:lists].each do |list|
+          block.call(list[:listId], list[:name], list[:metaData][:size])
+        end
+
+        break unless response[:"has-more"]
+        offset += response[:offset]
+      end
     end
 
     def each_email(id:, &block)

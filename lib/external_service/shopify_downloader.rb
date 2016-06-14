@@ -9,8 +9,13 @@ module ExternalService
 
     def each_list(&block)
       return to_enum(:each_list) unless block
+      email_count_response =  dispatcher.dispatch(:get, "/admin/customers/count.json")
 
-      raise "TODO: implement this method"
+      [[
+        dispatcher.shop_url,
+        "#{dispatcher.shop_url}'s customers",
+        email_count_response["count"]
+      ]].each(&block)
     end
 
     def each_email(id:, &block)

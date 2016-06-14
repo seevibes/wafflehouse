@@ -16,7 +16,6 @@ module ExternalService
 
     def dispatch(method, path)
       super() do
-        retried = 0
         response = begin
           @access_token ||= fetch_new_access_token
 
@@ -25,7 +24,6 @@ module ExternalService
           @access_token = nil
           raise
         end
-
         # Rate-limited to 10000 / 24h
         sleep 9
 
