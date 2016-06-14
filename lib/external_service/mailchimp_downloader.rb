@@ -10,15 +10,13 @@ module ExternalService
     def each_list(&block)
 
       return to_enum(:each_list) unless block
-      response = dispatcher.dispatch("lists/")
+      response = dispatcher.dispatch(:get, "lists/")
 
       lists = response["lists"].map{ |list| list.deep_symbolize_keys }
 
       lists.each do |list|
         block.call(list[:id], list[:name], nil)
       end
-
-      raise "TODO: implement this method"
     end
 
     def each_email(id:, &block)
