@@ -8,7 +8,15 @@ module ExternalService
     end
 
     def each_list(&block)
+
       return to_enum(:each_list) unless block
+      response = dispatcher.dispatch("lists/")
+
+      lists = response["lists"].map{ |list| list.deep_symbolize_keys }
+
+      lists.each do |list|
+        block.call(list[:id], list[:name], nil)
+      end
 
       raise "TODO: implement this method"
     end
@@ -34,11 +42,11 @@ module ExternalService
     def each_email(&block)
       return to_enum(:each_email) unless block
 
-      mailing_list_infos = dispatcher.dispatch(:get, "lists/#{external_id}")
+      mailing_list_infos = dispatcher.dispatch(:get, "lists/#{id}")
 
       offset = 0
       while offset < mailing_list_infos["stats"]["member_count"] do
-        response = dispatcher.dispatch(:get, "lists/#{external_id}/members?count=1000&offset=#{offset}&fields[]=email_address")
+        response = dispatcher.dispatch(:get, "lists/#{id}/members?count=1000&offset=#{offset}&fields[]=email_address")
         members = response["members"]
 
         members.each {|member| yield member["email_address"]}

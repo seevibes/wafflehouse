@@ -9,6 +9,7 @@ module ExternalService
     def initialize(account_identifiers:, credential_details:, sleep_time_seconds: 5, client: RestClient)
       @api_key = credential_details.fetch("api_key")
       @client  = client
+      @account_identifiers = account_identifiers
 
       super(sleep_time_seconds)
     end

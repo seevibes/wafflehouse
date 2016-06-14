@@ -36,12 +36,12 @@ module ExternalService
     def each_email(&block)
       return to_enum(:each_email) unless block
 
-      logger && logger.info("Download Hubspot Contact List #{external_id.inspect}")
+      logger && logger.info("Download Hubspot Contact List #{id.inspect}")
 
       offset = 0
       loop do
-        logger && logger.debug{ "Requesting Hubspot Contact List #{external_id.inspect} starting at offset #{offset}" }
-        response = dispatcher.dispatch(:get, "/contacts/v1/lists/#{external_id}/contacts/all?count=1000&vidOffset=#{offset}&property=email")
+        logger && logger.debug{ "Requesting Hubspot Contact List #{id.inspect} starting at offset #{offset}" }
+        response = dispatcher.dispatch(:get, "/contacts/v1/lists/#{id}/contacts/all?count=1000&vidOffset=#{offset}&property=email")
 
         response["contacts"].each do |contact|
           email = contact.fetch("properties", {}).fetch("email", {}).fetch("value", nil)
@@ -52,7 +52,7 @@ module ExternalService
         offset += Integer(response["vid-offset"])
       end
 
-      logger && logger.debug{ "Done downloading Hubspot Contact List #{external_id.inspect}" }
+      logger && logger.debug{ "Done downloading Hubspot Contact List #{id.inspect}" }
     end
 
     private
