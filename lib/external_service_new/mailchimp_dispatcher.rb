@@ -2,7 +2,7 @@ require "seevibes/oj"
 require "rest_client"
 require "seevibes/external_service/rest_client_dispatcher"
 
-module ExternalService
+module ExternalServiceNew
   class MailchimpDispatcher < RestClientDispatcher
     MAILCHIMP_API_URL = "api.mailchimp.com/3.0"
 

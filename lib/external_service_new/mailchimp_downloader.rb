@@ -1,4 +1,4 @@
-module ExternalService
+module ExternalServiceNew
   class MailchimpDownloader
     def initialize(dispatcher:, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher

@@ -2,7 +2,7 @@ require "seevibes/oj"
 require "rest_client"
 require "seevibes/external_service/rest_client_dispatcher"
 
-module ExternalService
+module ExternalServiceNew
   class HubspotDispatcher < RestClientDispatcher
     EXPIRES_IN = 28800
     HUBSPOT_API_URL = "https://api.hubapi.com/"
@@ -19,7 +19,9 @@ module ExternalService
         response = begin
           @access_token ||= fetch_new_access_token
 
-          @client.public_send(method, "#{HUBSPOT_API_URL}#{path.sub(%r{^/},"")}#{path["?"] ? "&" : "?"}access_token=#{@access_token}")
+          request_url = "#{HUBSPOT_API_URL}#{path.sub(%r{^/},"")}#{path["?"] ? "&" : "?"}access_token=#{@access_token}"
+          @client.public_send(method, request_url)
+
         rescue RestClient::Unauthorized => e
           @access_token = nil
           raise
@@ -34,14 +36,13 @@ module ExternalService
     private
 
     def fetch_new_access_token
-      response = Oj.load(
-        @client.post(
+      response = @client.post(
           "#{HUBSPOT_API_URL}/auth/v1/refresh",
           refresh_token: @refresh_token,
           client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
-          grant_type: "refresh_token"))
+          grant_type: "refresh_token")
 
-      response["access_token"]
+      Oj.load(response)["access_token"]
     end
   end
 end
