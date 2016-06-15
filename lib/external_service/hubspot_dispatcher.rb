@@ -42,14 +42,14 @@ module ExternalService
         client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
         grant_type: "refresh_token" }
       raise url.inspect
-      response = @client.post(
-          "#{HUBSPOT_API_URL}/auth/v1/refresh",
-          refresh_token: @refresh_token,
-          client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
-          grant_type: "refresh_token")
-      raise
-
-      Oj.load(response)["access_token"]
+      # response = @client.post(
+      #     "#{HUBSPOT_API_URL}/auth/v1/refresh",
+      #     refresh_token: @refresh_token,
+      #     client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
+      #     grant_type: "refresh_token")
+      # raise
+      #
+      # Oj.load(response)["access_token"]
     end
   end
 end
