@@ -1,4 +1,4 @@
-module ExternalService
+module ExternalServiceNew
   class ShopifyDownloader
     def initialize(dispatcher:, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
@@ -9,8 +9,13 @@ module ExternalService
 
     def each_list(&block)
       return to_enum(:each_list) unless block
+      email_count_response =  dispatcher.dispatch(:get, "/admin/customers/count.json")
 
-      raise "TODO: implement this method"
+      [[
+        dispatcher.shop_url,
+        "#{dispatcher.shop_url}'s customers",
+        email_count_response["count"]
+      ]].each(&block)
     end
 
     def each_email(id:, &block)

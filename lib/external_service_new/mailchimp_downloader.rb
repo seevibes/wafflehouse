@@ -1,4 +1,4 @@
-module ExternalService
+module ExternalServiceNew
   class MailchimpDownloader
     def initialize(dispatcher:, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
@@ -15,7 +15,7 @@ module ExternalService
       lists = response["lists"].map{ |list| list.deep_symbolize_keys }
 
       lists.each do |list|
-        block.call(list[:id], list[:name], nil)
+        block.call(list[:id], list[:name], list[:stats][:member_count])
       end
     end
 
@@ -44,7 +44,7 @@ module ExternalService
 
       offset = 0
       while offset < mailing_list_infos["stats"]["member_count"] do
-        response = dispatcher.dispatch(:get, "lists/#{id}/members?count=1000&offset=#{offset}&fields[]=email_address")
+        response = dispatcher.dispatch(:get, "lists/#{id}/members?count=1000&offset=#{offset}&fields[]=email_address,stats")
         members = response["members"]
 
         members.each {|member| yield member["email_address"]}

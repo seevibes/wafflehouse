@@ -2,12 +2,12 @@ require "seevibes/oj"
 require "rest_client"
 require "seevibes/external_service/rest_client_dispatcher"
 
-module ExternalService
+module ExternalServiceNew
   class ShopifyDispatcher < RestClientDispatcher
 
     attr_reader :shop_url
-    def initialize(account_identifiers:, credential_identifiers:, sleep_time_seconds: 5, client: RestClient)
-      @access_token = credential_details.fetch("access_token")
+    def initialize(account_identifiers: nil, credential_details:, sleep_time_seconds: 5, client: RestClient)
+      @access_token = credential_details.fetch("token")
       @shop_url     = account_identifiers.fetch("shop_url")
       @client       = client
 

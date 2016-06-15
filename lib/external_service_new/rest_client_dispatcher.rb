@@ -1,6 +1,6 @@
 require "rest_client"
 
-module ExternalService
+module ExternalServiceNew
   class BadRequest < RuntimeError ; end
   class Unauthorized < RuntimeError ; end
   class Forbidden < RuntimeError ; end
@@ -45,7 +45,7 @@ module ExternalService
 
       @retried += 1
       @sleep_time_seconds  *= 2
-
+    
       retry if @retried < NB_RETRIES
 
       raise BadRequest, "#{e.message}"
