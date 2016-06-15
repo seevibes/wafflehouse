@@ -19,10 +19,13 @@ module ExternalService
         response = begin
           @access_token ||= fetch_new_access_token
 
-          @client.public_send(method, "#{HUBSPOT_API_URL}#{path.sub(%r{^/},"")}#{path["?"] ? "&" : "?"}access_token=#{@access_token}")
-        rescue RestClient::Unauthorized => e
-          @access_token = nil
-          raise
+          request_url = "#{HUBSPOT_API_URL}#{path.sub(%r{^/},"")}#{path["?"] ? "&" : "?"}access_token=#{@access_token}"
+          raise request_url.inspect
+          @client.public_send(method, request_url)
+
+        # rescue RestClient::Unauthorized => e
+        #   @access_token = nil
+        #   raise
         end
         # Rate-limited to 10000 / 24h
         sleep 9
@@ -34,14 +37,19 @@ module ExternalService
     private
 
     def fetch_new_access_token
-      response = Oj.load(
-        @client.post(
+      url =  { base_url: "#{HUBSPOT_API_URL}/auth/v1/refresh",
+        refresh_token: @refresh_token,
+        client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
+        grant_type: "refresh_token" }
+      raise url.inspect
+      response = @client.post(
           "#{HUBSPOT_API_URL}/auth/v1/refresh",
           refresh_token: @refresh_token,
           client_id: ENV.fetch("HUBSPOT_CLIENT_ID"),
-          grant_type: "refresh_token"))
+          grant_type: "refresh_token")
+      raise
 
-      response["access_token"]
+      Oj.load(response)["access_token"]
     end
   end
 end

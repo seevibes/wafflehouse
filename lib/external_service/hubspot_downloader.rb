@@ -13,7 +13,6 @@ module ExternalService
       return to_enum(:each_list) unless block
 
       offset = 0
-      dispatcher = ExternalService::HubspotDispatcher.new(options[:refresh_token])
       loop do
         response = dispatcher.dispatch(:get, "/contacts/v1/lists?count=1000&offset=#{offset}").deep_symbolize_keys
         response[:lists].each do |list|
