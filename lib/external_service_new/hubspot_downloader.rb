@@ -1,6 +1,6 @@
 require "seevibes/external_service/hubspot_dispatcher"
 
-module ExternalService
+module ExternalServiceNew
   class HubspotDownloader
     def initialize(dispatcher:, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
