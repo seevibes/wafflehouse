@@ -1,6 +1,6 @@
 require "connectors/hubspot"
 require "connectors/mailchimp"
-require "connectors/hubspot"
+require "connectors/shopify"
 require "external_service_new/rest_client_dispatcher"
 require "external_service_new/hubspot_dispatcher"
 require "external_service_new/hubspot_downloader"
