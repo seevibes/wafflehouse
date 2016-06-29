@@ -50,7 +50,7 @@ module ExternalServiceNew
       offset = 0
       loop do
         logger && logger.debug{ "Requesting Hubspot Contact List #{id.inspect} starting at offset #{offset}" }
-        response = dispatcher.dispatch(:get, "/contacts/v1/lists/#{id}/contacts/all?count=1000&vidOffset=#{offset}&property=email")
+        response = dispatcher.dispatch(:get, "/contacts/v1/lists/#{id}/contacts/all?count=250&vidOffset=#{offset}&property=email")
 
         response["contacts"].each do |contact|
           email = contact.fetch("properties", {}).fetch("email", {}).fetch("value", nil)
@@ -58,7 +58,7 @@ module ExternalServiceNew
         end
 
         break unless response["has-more"]
-        offset += Integer(response["vid-offset"])
+        offset = Integer(response["vid-offset"])
       end
 
       logger && logger.debug{ "Done downloading Hubspot Contact List #{id.inspect}" }
