@@ -13,7 +13,7 @@ module ExternalServiceNew
     "0013600000PwiqSAAR",
     "0013600000PwiqTAAR",
     "0013600000PwiqUAAR"
-  ]
+  ] # By default Salesforce add contacts to your account. Those are probably salesforce staff IDs, we dont need them.
 
   class SalesforceDownloader
 
