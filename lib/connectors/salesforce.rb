@@ -17,18 +17,24 @@ module Connectors
     end
 
     def description
-
+      auth.extra.display_name
     end
 
     def account_identifiers
       {
-
+        name: auth.extra.display_name,
+        email: auth.extra.email,
+        id: auth.extra.id,
+        organisation_id: auth.extra.organization_id,
+        avatar_url: auth.extra.photos.picture
       }
     end
 
     def credential_details
       {
-
+        oauth_token: auth.credentials.token,
+        expires: auth.credentials.expires,
+        instance_url: auth.credentials.instance_url
       }
     end
   end

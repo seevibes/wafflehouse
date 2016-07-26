@@ -1,5 +1,23 @@
 module ExternalServiceNew
+
+  FILTERED_ACCOUNTS = [
+    "0013600000PwiqJAAR",
+    "0013600000PwiqKAAR",
+    "0013600000PwiqLAAR",
+    "0013600000PwiqMAAR",
+    "0013600000PwiqNAAR",
+    "0013600000PwiqOAAR",
+    "0013600000PwiqPAAR",
+    "0013600000PwiqQAAR",
+    "0013600000PwiqRAAR",
+    "0013600000PwiqSAAR",
+    "0013600000PwiqTAAR",
+    "0013600000PwiqUAAR"
+  ]
+
   class SalesforceDownloader
+
+
     def initialize(dispatcher:, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
 
@@ -9,11 +27,11 @@ module ExternalServiceNew
 
     def each_list(&block)
       return to_enum(:each_list) unless block
-      email_count =  dispatcher.dispatch(:count, "Contact")
-
+      email_count_object = dispatcher.dispatch(:query, "SELECT count(email) FROM Contact WHERE Email != NULL AND AccountId NOT IN ('#{FILTERED_ACCOUNTS.join("', '")}')")
+      email_count = email_count_object.first["expr0"]
       [[
-         dispatcher.account_id,
-         "#{dispatcher.account_id}'s customers",
+         dispatcher.account_name,
+         "#{dispatcher.account_name}'s customers",
          email_count
        ]].each(&block)
     end
@@ -41,8 +59,8 @@ module ExternalServiceNew
 
       logger && logger.info("Downloading Salesforce Customer List with #{filters ? filters.inspect : "no filters"}")
 
-      response = dispatcher.dispatch(:all, "Contact")
-      response.each {|contact| yield contact["Email"] }
+      response = dispatcher.dispatch(:query, "SELECT email FROM Contact WHERE Email != NULL AND AccountId NOT IN ('#{FILTERED_ACCOUNTS.join("', '")}')")
+      response.each {|email| yield email["Email"] }
 
       logger && logger.info("Downloaded Shopify Customer List")
     end
