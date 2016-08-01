@@ -60,6 +60,7 @@ module ExternalServiceNew
       logger && logger.info("Downloading Salesforce Customer List with #{filters ? filters.inspect : "no filters"}")
 
       response = dispatcher.dispatch(:query, "SELECT email FROM Contact WHERE Email != NULL AND AccountId NOT IN ('#{FILTERED_ACCOUNTS.join("', '")}')")
+
       response.each {|email| yield email["Email"] }
 
       logger && logger.info("Downloaded Shopify Customer List")

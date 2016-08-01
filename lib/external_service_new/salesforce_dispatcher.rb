@@ -9,11 +9,19 @@ module ExternalServiceNew
 
     attr_reader :account_name
 
-    def initialize(account_identifiers: nil, credential_details:, sleep_time_seconds: 5)
-
+    def initialize(account_identifiers: nil, credential_details:, sleep_time_seconds: 5, &block)
+      @credential_details = credential_details
       @account_name = account_identifiers["name"]
-      @client = ::Restforce.new(credential_details.symbolize_keys.slice(:oauth_token, :instance_url))
+      client_params = @credential_details.symbolize_keys.slice(:oauth_token, :instance_url, :refresh_token)
+
+      @client = ::Restforce.new(client_params.merge(authentication_callback: authentication_callback(&block)))
       super(sleep_time_seconds)
+    end
+
+    def authentication_callback(&block)
+      -> (x) do
+        block.call(@credential_details.merge(oauth_token: x.to_s)) if block_given?
+      end
     end
 
 

@@ -32,6 +32,7 @@ module Connectors
 
     def credential_details
       {
+        refresh_token: auth.credentials.refresh_token,
         oauth_token: auth.credentials.token,
         expires: auth.credentials.expires,
         instance_url: auth.credentials.instance_url
