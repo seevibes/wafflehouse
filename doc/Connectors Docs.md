@@ -8,12 +8,14 @@ The role of the Connectors is to enable Seevibes to gather the list of mailing l
 
 Your role will consist in the following steps:
 
+
 1. Find and or implement an [omniauth](https://github.com/intridea/omniauth/wiki) backend;
 2. Implement the [Seevibes Connector Protocol](#the-seevibes-connector-protocol) in a class;
 3. Implement the [Seevibes Dispatcher Protocol](#the-seevibes-dispatcher-protocol) in a second class;
 4. Implement the [Seevibes Downloader Protocol](#the-seevibes-downloader-protocol) in a third class;
 5. Do manual and automated testing of the written code; [rspec](http://rspec.info/) is our tool of choice.
 
+References: tutorials for omniauth: http://code.tutsplus.com/articles/how-to-use-omniauth-to-authenticate-your-users--net-22094
 
 # Architecture
 
