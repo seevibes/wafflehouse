@@ -62,7 +62,7 @@ module ExternalServiceNew
       response = dispatcher.dispatch(:query, "SELECT email FROM Contact WHERE Email != NULL AND AccountId NOT IN ('#{FILTERED_ACCOUNTS.join("', '")}')")
       response.each {|email| yield email["Email"] }
 
-      logger && logger.info("Downloaded Shopify Customer List")
+      logger && logger.info("Downloaded Salesforce Customer List")
     end
 
     private
