@@ -15,7 +15,7 @@ module ExternalServiceNew
 
     def each_email(id: nil, &block)
       ZendeskInternalDownloader.new(
-        dispatcher: dispatcher, 
+        dispatcher: dispatcher,
         logger: logger
       ).each_email(&block)
     end
@@ -26,7 +26,7 @@ module ExternalServiceNew
   end
 
   class ZendeskInternalDownloader
-    def initialize(dispatcher:, filters: nil, logger:nil) 
+    def initialize(dispatcher:, filters: nil, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
 
       @dispatcher = dispatcher
@@ -36,15 +36,15 @@ module ExternalServiceNew
 
     def each_email(&block)
       return to_enum(:each_email) unless block
-      logger && logger.info("Downloading Zendesk Customer List with #{filters ? filters.inspect : "no filters"}") 
-    
+      logger && logger.info("Downloading Zendesk Customer List with #{filters ? filters.inspect : "no filters"}")
+
       response = dispatcher.dispatch(:query, "type:user role:end-user")
       response.each {|email| yield email["email"]}
 
       logger && logger.info("Downloaded Zendesk Customer List")
     end
 
-    private 
+    private
 
     attr_reader :dispatcher, :filters, :logger
   end
