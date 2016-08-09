@@ -7,6 +7,7 @@ module ExternalServiceNew
 
     def each_list(&block)
       return to_enum(:each_list) unless block
+      # We are putting all emails in just one list that we create
       [[
         dispatcher.site_url,
         "#{dispatcher.site_url}'s customers"
