@@ -1,6 +1,6 @@
 module Connectors
   class Zendesk
-  	def self.call(params:, auth:)
+    def self.call(params:, auth:)
       new(params, auth)
     end
 
@@ -22,11 +22,11 @@ module Connectors
 
     def account_identifiers
       {
-        url: 				  auth.extra.raw_info.url,
-        id:   			  auth.extra.raw_info.id,
+        url:          auth.extra.raw_info.url,
+        id:           auth.extra.raw_info.id,
         name:         auth.extra.raw_info.name,
         role:         auth.extra.raw_info.role.name,
-        site:   			auth.info.site,
+        site:         auth.info.site,
       }
     end
 
@@ -34,7 +34,7 @@ module Connectors
       {
         api_token: ENV.fetch("ZENDESK_API_TOKEN"),
         username:  auth.credentials.token,
-        secret: 	 auth.credentials.secret,
+        secret:    auth.credentials.secret,
       }
     end
   end
