@@ -1,6 +1,6 @@
-require "seevibes/oj"
+require "oj"
 require "rest_client"
-require "seevibes/external_service/rest_client_dispatcher"
+require "external_service_new/rest_client_dispatcher"
 
 module ExternalServiceNew
   class ShopifyDispatcher < RestClientDispatcher

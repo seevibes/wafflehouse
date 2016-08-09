@@ -63,7 +63,7 @@ module ExternalServiceNew
 
       response.each {|email| yield email["Email"] }
 
-      logger && logger.info("Downloaded Shopify Customer List")
+      logger && logger.info("Downloaded Salesforce Customer List")
     end
 
     private

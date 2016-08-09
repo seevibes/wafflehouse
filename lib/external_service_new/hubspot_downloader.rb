@@ -1,5 +1,3 @@
-require "seevibes/external_service/hubspot_dispatcher"
-
 module ExternalServiceNew
   class HubspotDownloader
     def initialize(dispatcher:, logger:nil)
