@@ -22,7 +22,7 @@ module Connectors
     end
 
     def description
-      auth.extra.raw_info.account_name
+      auth.extra.raw_info.name
     end
 
     def account_identifiers

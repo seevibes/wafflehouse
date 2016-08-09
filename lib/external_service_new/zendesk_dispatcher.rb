@@ -6,12 +6,10 @@ module ExternalServiceNew
   class ZendeskDispatcher < RestClientDispatcher
     attr_reader :site_url
 
-    def initialize(
-      account_identifiers: nil, 
-      credential_details:, 
-      sleep_time_seconds: 5, 
-      client: RestClient
-    )
+    def initialize(account_identifiers: nil, credential_details:, sleep_time_seconds: 5, client: RestClient)
+
+      account_identifiers = account_identifiers.symbolize_keys
+      credential_details = credential_details.symbolize_keys
       @site_url = account_identifiers.fetch(:site)
       @api_token = credential_details.fetch(:api_token)
       @client = ZendeskAPI::Client.new do |config|
