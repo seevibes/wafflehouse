@@ -1,4 +1,9 @@
 module Connectors
+  #
+  # SETUP
+  # you'll need an environment variable ZENDESK_API_TOKEN
+  # that you can found https://{site_name}.zendesk.com/agent/admin/api
+  #
   class Zendesk
     def self.call(params:, auth:)
       new(params, auth)
