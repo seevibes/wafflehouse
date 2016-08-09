@@ -2,7 +2,7 @@ module ExternalServiceNew
   class ZendeskDownloader
     def initialize(dispatcher:, logger:nil)
       @dispatcher = dispatcher
-      @logger     = logger || respond_to?(:logger) ? logger : nil
+      @logger     = logger
     end
 
     def each_list(&block)
@@ -31,7 +31,7 @@ module ExternalServiceNew
 
       @dispatcher = dispatcher
       @filters = filters
-      @logger = logger || respond_to?(:logger) ? logger : nil
+      @logger = logger
     end
 
     def each_email(&block)
@@ -39,9 +39,9 @@ module ExternalServiceNew
       logger && logger.info("Downloading Zendesk Customer List with #{filters ? filters.inspect : "no filters"}")
 
       response = dispatcher.dispatch(:query, "type:user role:end-user")
-      response.each {|email| yield email["email"]}
+      response.each {|contact| yield(contact["email"])}
 
-      logger && logger.info("Downloaded Zendesk Customer List")
+      logger && logger.info("Downloaded Zendesk )Customer List")
     end
 
     private
