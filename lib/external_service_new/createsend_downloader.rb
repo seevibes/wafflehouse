@@ -38,7 +38,7 @@ module ExternalServiceNew
     def each_email(list_id:, &block)
       page = 1
       return to_enum(:each_email) unless block
-      logger && logger.info("Downloading Campaign Monitor List with #{filters ? filters.inspect : "no filters"}")
+      logger && logger.info("Downloading Campaign Monitor ListId: #{list_id} with #{filters ? filters.inspect : "no filters"}")
 
       loop do
         response = dispatcher.dispatch(:subscribers, id: list_id, page: page)
