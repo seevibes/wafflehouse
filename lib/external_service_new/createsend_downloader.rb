@@ -8,6 +8,7 @@ module ExternalServiceNew
     def each_list(&block)
       return to_enum(:each_list) unless block
       response = dispatcher.dispatch(:lists).each do |list|
+        # We are doing an other request to get the total number of email by list
         email_count = dispatcher.dispatch(:subscribers, id:list.ListID, page_size:10)
         block.call(list[:ListID], list[:Name], email_count[:TotalNumberOfRecords])
       end
