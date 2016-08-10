@@ -21,7 +21,7 @@ module ExternalServiceNew
 
     def dispatch(method, path)
       super() do
-        @client.search(method => path).fetch()
+        @client.search(method => path)
       end
     end
   end
