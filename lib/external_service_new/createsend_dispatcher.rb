@@ -11,7 +11,6 @@ module ExternalServiceNew
 
     def initialize(account_identifiers: nil, credential_details:, sleep_time_seconds: 5, client: RestClient)
 
-      puts " CreatesendDispatcher initialize credential_details: #{credential_details}"
       @auth = {
         :access_token => credential_details.fetch(:oauth_token),
         :refresh_token => credential_details.fetch(:refresh_token)
