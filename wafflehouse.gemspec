@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'oj'
   spec.add_dependency 'rest-client'
   spec.add_dependency 'zendesk_api'
+  spec.add_dependency 'createsend'
 
 
 end
