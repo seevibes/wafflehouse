@@ -10,7 +10,8 @@ module ExternalServiceNew
     PAGE_SIZE_MIN = 10
 
     def initialize(account_identifiers: nil, credential_details:, sleep_time_seconds: 5, client: RestClient)
-
+      account_identifiers = account_identifiers.symbolize_keys
+      credential_details = credential_details.symbolize_keys
       @auth = {
         :access_token => credential_details.fetch(:oauth_token),
         :refresh_token => credential_details.fetch(:refresh_token)
