@@ -5,7 +5,6 @@ require "createsend"
 
 module ExternalServiceNew
   class CreatesendDispatcher < RestClientDispatcher
-    #maximum and minimun email fetch by page
     PAGE_SIZE_MAX = 1000
     PAGE_SIZE_MIN = 10
 
@@ -13,8 +12,8 @@ module ExternalServiceNew
       account_identifiers = account_identifiers.symbolize_keys
       credential_details = credential_details.symbolize_keys
       @auth = {
-        :access_token => credential_details.fetch(:oauth_token),
-        :refresh_token => credential_details.fetch(:refresh_token)
+        access_token: credential_details.fetch(:oauth_token),
+        refresh_token: credential_details.fetch(:refresh_token)
       }
 
       cs = CreateSend::CreateSend.new @auth
