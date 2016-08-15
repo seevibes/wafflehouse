@@ -27,6 +27,8 @@ module ExternalServiceNew
   end
 
   class ZendeskInternalDownloader
+    # maximum of 100 records per page
+    PER_PAGE = 100
     def initialize(dispatcher:, filters: nil, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
 
@@ -36,17 +38,26 @@ module ExternalServiceNew
     end
 
     def each_email(&block)
+      page = 1
       return to_enum(:each_email) unless block
       logger && logger.info("Downloading Zendesk Customer List with #{filters ? filters.inspect : "no filters"}")
 
-      response = dispatcher.dispatch(:query, "type:user role:end-user")
-      response.each {|contact| yield(contact["email"])}
+      loop do
+        response = dispatcher.dispatch(:query, each_email_path).per_page(PER_PAGE).page(page).fetch
+        break if response.empty?
+        response.each{|contact| yield(contact["email"])}
+
+        page +=1
+      end
 
       logger && logger.info("Downloaded Zendesk )Customer List")
     end
 
     private
 
+    def each_email_path
+      "type:user role:end-user"
+    end
     attr_reader :dispatcher, :filters, :logger
   end
 end
