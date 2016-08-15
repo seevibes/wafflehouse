@@ -4,7 +4,7 @@ require "external_service_new/rest_client_dispatcher"
 require "createsend"
 
 module ExternalServiceNew
-  class CreatesendDispatcher < RestClientDispatcher
+  class CampaignMonitorDispatcher < RestClientDispatcher
     PAGE_SIZE_MAX = 1000
     PAGE_SIZE_MIN = 10
 

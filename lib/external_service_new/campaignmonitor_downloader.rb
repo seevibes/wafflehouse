@@ -1,5 +1,5 @@
 module ExternalServiceNew
-  class CreatesendDownloader
+  class CampaignMonitorDownloader
     def initialize(dispatcher:, logger:nil)
       @dispatcher = dispatcher
       @logger     = logger
