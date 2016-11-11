@@ -8,7 +8,7 @@ module ExternalServiceNew
   class RateLimit < RuntimeError ; end
   class ServerError < RuntimeError ; end
   class ServiceUnavailable < RuntimeError ; end
-
+  class PaymentRequired < RuntimeError; end
 
   class RestClientDispatcher
     NB_RETRIES = 5
@@ -22,8 +22,10 @@ module ExternalServiceNew
       raise ArgumentError, "Missing block to delegate to" unless block_given?
 
       yield
-    rescue RestClient::BadRequest => e
-      raise BadRequest, "#{e.message}"
+    rescue RestClient::BadRequest  => e
+      raise BadRequest, "#{e.message}", e.backtrace
+    rescue RestClient::PaymentRequired => e
+      raise PaymentRequired, "Payment required for external service use!\n #{e.class}: #{e.message}", e.backtrace
     rescue  Unauthorized,
             Forbidden,
             RateLimit,
