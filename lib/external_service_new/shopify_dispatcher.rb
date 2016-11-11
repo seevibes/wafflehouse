@@ -5,6 +5,8 @@ require "external_service_new/rest_client_dispatcher"
 module ExternalServiceNew
   class ShopifyDispatcher < RestClientDispatcher
 
+
+
     attr_reader :shop_url
     def initialize(account_identifiers: nil, credential_details:, sleep_time_seconds: 5, client: RestClient)
       @access_token = credential_details.fetch("token")
