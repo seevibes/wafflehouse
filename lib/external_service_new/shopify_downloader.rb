@@ -46,7 +46,11 @@ module ExternalServiceNew
         response = dispatcher.dispatch(:get, "/admin/customers/search.json?page=#{page}&limit=250&fields=email")
         break if response["customers"].empty?
 
-        response["customers"].each {|customer| yield customer["email"]}
+        response["customers"].each do |customer|
+          next unless customer && customer["email"]
+
+          yield customer["email"]
+        end
         page += 1
       end
 
