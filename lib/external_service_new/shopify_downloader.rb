@@ -77,6 +77,7 @@ module ExternalServiceNew
         break if response["customers"].empty?
 
         response["customers"].each do |customer_hash|
+          next unless customer_hash["email"].blank?
           next unless matching_local_filters(customer_hash)
 
           yield customer_hash["email"]
