@@ -47,7 +47,7 @@ module ExternalServiceNew
 
       @retried += 1
       @sleep_time_seconds  *= 2
-    
+
       retry if @retried < NB_RETRIES
 
       raise BadRequest, "#{e.message}"
