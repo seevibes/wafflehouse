@@ -36,7 +36,7 @@ module ExternalServiceNew
        ]].each(&block)
     end
 
-    def each_email(id: nil, &block)
+    def each_email(id: nil, filters: nil, &block)
       SalesforceInternalDownloader.new(dispatcher: dispatcher, logger: logger).each_email(&block)
     end
 

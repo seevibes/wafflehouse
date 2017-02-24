@@ -22,7 +22,7 @@ module ExternalServiceNew
       end
     end
 
-    def each_email(id:, &block)
+    def each_email(id:, filters: nil, &block)
       HubspotInternalDownloader.new(dispatcher: dispatcher, id: id, logger: logger).each_email(&block)
     end
 

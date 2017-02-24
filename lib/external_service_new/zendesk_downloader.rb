@@ -14,7 +14,7 @@ module ExternalServiceNew
       ]].each(&block)
     end
 
-    def each_email(id: nil, &block)
+    def each_email(id: nil, filters: nil, &block)
       ZendeskInternalDownloader.new(
         dispatcher: dispatcher,
         logger: logger

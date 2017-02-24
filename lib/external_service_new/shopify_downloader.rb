@@ -19,7 +19,7 @@ module ExternalServiceNew
       ]].each(&block)
     end
 
-    def each_email(filters: [], &block, id: "unused for this external service")
+    def each_email(id: nil, filters: [], &block)
       raise unless validate_filters(filters)
 
       ShopifyInternalDownloader.new(dispatcher: dispatcher, filters: filters, logger: logger).each_email(&block)

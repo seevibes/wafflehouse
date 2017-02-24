@@ -19,7 +19,7 @@ module ExternalServiceNew
       end
     end
 
-    def each_email(id:, &block)
+    def each_email(id:, filters: nil, &block)
       MailchimpInternalDownloader.new(dispatcher: dispatcher, id: id, logger: logger).each_email(&block)
     end
 
