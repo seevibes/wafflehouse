@@ -1,6 +1,6 @@
 module ExternalServiceNew
   class HubspotDownloader
-    def initialize(dispatcher:, logger:nil)
+    def initialize(dispatcher:, logger:nil, importer: nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
 
       @dispatcher = dispatcher

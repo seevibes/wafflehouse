@@ -1,6 +1,6 @@
 module ExternalServiceNew
   class ZendeskDownloader
-    def initialize(dispatcher:, logger:nil)
+    def initialize(dispatcher:, logger: nil, importer: nil)
       @dispatcher = dispatcher
       @logger     = logger
     end

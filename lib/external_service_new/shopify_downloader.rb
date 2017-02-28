@@ -1,40 +1,8 @@
+require "external_service_new/shopify_customers_response"
+
 module ExternalServiceNew
   class ShopifyDownloader
 
-    def initialize(dispatcher:, logger:nil)
-      raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
-
-      @dispatcher = dispatcher
-      @logger     = logger || respond_to?(:logger) ? logger : nil
-    end
-
-    def each_list(&block)
-      return to_enum(:each_list) unless block
-      email_count_response =  dispatcher.dispatch(:get, "/admin/customers/count.json")
-
-      [[
-        dispatcher.shop_url,
-        "#{dispatcher.shop_url}'s customers",
-        email_count_response["count"]
-      ]].each(&block)
-    end
-
-    def each_email(id: nil, filters: [], &block)
-      raise unless validate_filters(filters)
-
-      ShopifyInternalDownloader.new(dispatcher: dispatcher, filters: filters, logger: logger).each_email(&block)
-    end
-
-    private
-
-    def validate_filters(filters)
-      filters.all?{ |filter| !filter[:code].ni? && !filter[:value].nil? }
-    end
-
-    attr_reader :dispatcher, :logger
-  end
-
-  class ShopifyInternalDownloader
     LOCAL_FILTERS = [
       "average_basket_revenue_min",
       "average_basket_revenue_max",
@@ -54,107 +22,69 @@ module ExternalServiceNew
       "province_code",
       "zip"]
 
-    attr_reader :dispatcher, :logger
-    def initialize(dispatcher:, filters: [], logger:nil)
-      raise "dispatcher must not be nil}" unless dispatcher
+    def initialize(dispatcher:, logger: nil, importer: nil)
+      raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
 
       @dispatcher = dispatcher
-      @filters    = filters
       @logger     = logger || respond_to?(:logger) ? logger : nil
+      @importer   = importer
     end
 
+    def each_list(&block)
+      return to_enum(:each_list) unless block
+      email_count_response =  dispatcher.dispatch(:get, "/admin/customers/count.json")
 
-    EMAIL_FIELDS = "email,orders_count,total_spent,created_at,updated_at"
-    def each_email(&block)
+      [[
+        dispatcher.shop_url,
+        "#{dispatcher.shop_url}'s customers",
+        email_count_response["count"]
+      ]].each(&block)
+    end
+
+    def each_email(id: nil, filters: [], &block)
+      @filters = filters
+      raise unless validate_filters
+
       return to_enum(:each_email) unless block
+      logger && logger.info("Downloading Shopify Customer List with #{filters.empty? ? 'no filters' : filters.inspect}")
 
-      logger && logger.info("Downloading Shopify Customer List with #{@filters.empty? ? 'no filters' : @filters.inspect}")
-
-      remote_filters = filters_helper(REMOTE_FILTERS)
       page = 1
+      logger && (start_time = Time.now)
       loop do
-        response = dispatcher.dispatch(:get, "/admin/customers/search.json?page=#{page}&limit=250&fields=#{EMAIL_FIELDS}&query= " + uri_format(remote_filters))
+        response = dispatcher.dispatch(:get, "/admin/customers/search.json?page=#{page}&limit=250&query= " + uri_format(remote_filters))
         break if response["customers"].empty?
 
-        response["customers"].each do |customer_hash|
-          next if customer_hash["email"].blank?
-          next unless matching_local_filters(customer_hash)
+        response = ExternalServiceNew::ShopifyCustomersResponse.new(batch_customers: response, local_filters: local_filters)
+        response.each_valid_email {|email| yield email }
 
-          yield customer_hash["email"]
-        end
+        importer.import_emails_with_metadata(response) if importer
         page += 1
       end
 
-      logger && logger.info("Downloaded Shopify Customer List")
+      importer.notify_end_of_response_from_external_service if importer
+
+      logger && logger.info("Downloaded Shopify Customer List between #{start_time} and #{Time.now}")
     end
 
 
     private
 
-    def filters_helper(from)
-      @filters.select{|filter| from.include?(filter)}
+    def local_filters
+      @filters.select{|filter| LOCAL_FILTERS.include?(filter)}
+    end
+
+    def remote_filters
+      @filters.select{|filter| REMOTE_FILTERS.include?(filter)}
+    end
+
+    def validate_filters
+      @filters.all?{ |filter| !filter[:code].nil? && !filter[:value].nil? && (LOCAL_FILTERS.include?(filter) || REMOTE_FILTERS.include?(filter)) }
     end
 
     def uri_format(filters)
       filters.map{|f| "#{f[:code]}:#{f[:value]}"}.join(" ")
     end
 
-    def matching_local_filters(customer_hash)
-      customer_hash["total_spent"] = customer_hash["total_spent"].to_i
-      customer_hash["orders_count"] = customer_hash["orders_count"].to_i
-      customer_hash["created_at"] = customer_hash["created_at"].to_time
-      customer_hash["updated_at"] = customer_hash["updated_at"].to_time
-
-      filters_helper(LOCAL_FILTERS).all? do |filter|
-        self.send("check_#{filter[:code]}", customer_hash, filter[:value])
-      end
-    end
-
-
-    # LOCAL_FILTER CHECKS
-
-    def check_created_at_max(customer_hash, time)
-      customer_hash["created_at"] <= time
-    end
-
-    def check_created_at_min(customer_hash, time)
-      customer_hash["created_at"] >= time
-    end
-
-    def check_updated_at_max(customer_hash, time)
-      customer_hash["updated_at"] <= time
-    end
-
-    def check_updated_at_min(customer_hash, time)
-      customer_hash["updated_at"] >= time
-    end
-
-    def check_average_basket_revenue_max(customer_hash, value)
-      return false if customer_hash["orders_count"] < 1
-
-      (customer_hash["total_spent"] / customer_hash["orders_count"]) <= value.to_i
-    end
-
-    def check_average_basket_revenue_min(customer_hash, value)
-      return false if customer_hash["orders_count"] < 1
-
-      (customer_hash["total_spent"] / customer_hash["orders_count"]) >= value.to_i
-    end
-
-    def check_orders_count_max(customer_hash, value)
-      customer_hash["orders_count"] <= value.to_i
-    end
-
-    def check_orders_count_min(customer_hash, value)
-      customer_hash["orders_count"] >= value.to_i
-    end
-
-    def check_total_spent_max(customer_hash, value)
-      customer_hash["total_spent"] <= value.to_i
-    end
-
-    def check_total_spent_min(customer_hash, value)
-      customer_hash["total_spent"] >= value.to_i
-    end
+    attr_reader :dispatcher, :logger, :importer
   end
 end
