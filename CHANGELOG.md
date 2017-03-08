@@ -9,3 +9,7 @@
 # 1.4.1
 
 * import shopify #each_email responses to analytics, prepare other downloaders with similar importer parameter
+
+# 1.4.2
+
+* import mailchimp #each_email responses to analytics

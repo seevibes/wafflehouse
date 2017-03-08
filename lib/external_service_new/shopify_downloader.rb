@@ -70,19 +70,19 @@ module ExternalServiceNew
     private
 
     def local_filters
-      @filters.select{|filter| LOCAL_FILTERS.include?(filter)}
+      @filters.select{|filter| LOCAL_FILTERS.include?(filter[:filter_code])}
     end
 
     def remote_filters
-      @filters.select{|filter| REMOTE_FILTERS.include?(filter)}
+      @filters.select{|filter| REMOTE_FILTERS.include?(filter[:filter_code])}
     end
 
     def validate_filters
-      @filters.all?{ |filter| !filter[:code].nil? && !filter[:value].nil? && (LOCAL_FILTERS.include?(filter) || REMOTE_FILTERS.include?(filter)) }
+      @filters.all?{ |filter| !filter[:filter_code].nil? && !filter[:filter_value].nil? && (LOCAL_FILTERS.include?(filter[:filter_code]) || REMOTE_FILTERS.include?(filter[:filter_code])) }
     end
 
     def uri_format(filters)
-      filters.map{|f| "#{f[:code]}:#{f[:value]}"}.join(" ")
+      filters.map{|f| "#{f[:filter_code]}:#{f[:filter_value]}"}.join(" ")
     end
 
     attr_reader :dispatcher, :logger, :importer

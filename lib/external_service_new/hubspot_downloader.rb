@@ -43,7 +43,7 @@ module ExternalServiceNew
     def each_email(&block)
       return to_enum(:each_email) unless block
 
-      logger && logger.info("Download Hubspot Contact List #{id.inspect}")
+      logger && logger.info("Downloading Hubspot Contact List #{id.inspect}")
 
       offset = 0
       loop do
