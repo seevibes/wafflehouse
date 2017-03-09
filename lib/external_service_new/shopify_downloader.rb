@@ -82,7 +82,7 @@ module ExternalServiceNew
     end
 
     def uri_format(filters)
-      filters.map{|f| "#{f[:filter_code]}:#{f[:filter_value]}"}.join(" ")
+      filters.map{|f| "#{f[:filter_code]}:#{I18n.transliterate(f[:filter_value])}"}.join(" ")
     end
 
     attr_reader :dispatcher, :logger, :importer

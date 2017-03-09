@@ -17,7 +17,7 @@ module ExternalServiceNew
     end
 
     def format_for_analytics
-      self.members_with_valid_email.map do |member|
+      members_with_valid_email.map do |member|
 
         # Never store emails in clear text
         email_SHA256 = StringHelpers.normalized_SHA256(member["email_address"])

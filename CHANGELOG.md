@@ -13,3 +13,7 @@
 # 1.4.2
 
 * import mailchimp #each_email responses to analytics
+
+# 1.4.3
+
+* sanitize accents from shopify filters before parsing them in the URI
