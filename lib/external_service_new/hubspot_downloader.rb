@@ -1,6 +1,8 @@
 module ExternalServiceNew
   class HubspotDownloader
-    def initialize(dispatcher:, logger:nil, importer: nil)
+
+    attr_reader :dispatcher, :importer, :logger
+    def initialize(dispatcher:, importer: nil, logger:nil)
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
 
       @dispatcher = dispatcher
@@ -23,24 +25,6 @@ module ExternalServiceNew
     end
 
     def each_email(id:, filters: nil, &block)
-      HubspotInternalDownloader.new(dispatcher: dispatcher, id: id, logger: logger).each_email(&block)
-    end
-
-    private
-
-    attr_reader :refresh_token, :dispatcher
-  end
-
-  class HubspotInternalDownloader
-    def initialize(dispatcher:, id:, logger:nil)
-      raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
-
-      @dispatcher = dispatcher
-      @id         = id
-      @logger     = logger || respond_to?(:logger) ? logger : nil
-    end
-
-    def each_email(&block)
       return to_enum(:each_email) unless block
 
       logger && logger.info("Downloading Hubspot Contact List #{id.inspect}")
@@ -61,9 +45,5 @@ module ExternalServiceNew
 
       logger && logger.debug{ "Done downloading Hubspot Contact List #{id.inspect}" }
     end
-
-    private
-
-    attr_reader :refresh_token, :id, :dispatcher
   end
 end
