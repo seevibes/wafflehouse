@@ -27,7 +27,7 @@ module ExternalServiceNew
           raise
         end
         # Rate-limited to 10000 / 24h
-        sleep 9
+        sleep 2.2
 
         Oj.load(response)
       end
