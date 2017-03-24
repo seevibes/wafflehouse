@@ -17,3 +17,7 @@
 # 1.4.3
 
 * sanitize accents from shopify filters before parsing them in the URI
+
+# 1.4.5
+
+* add logic to pull all hubspot emails as a single customer list if the account is a CRM (has no lists)
