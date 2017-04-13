@@ -1,3 +1,5 @@
+require "external_service_new/hubspot_contacts_response"
+
 module ExternalServiceNew
   class HubspotDownloader
 
@@ -9,6 +11,7 @@ module ExternalServiceNew
       raise "dispatcher must not be nil, found #{dispatcher.inspect}" unless dispatcher
 
       @dispatcher = dispatcher
+      @importer   = importer
       @logger     = logger || respond_to?(:logger) ? logger : nil
     end
 
@@ -49,16 +52,16 @@ module ExternalServiceNew
             dispatcher.dispatch(:get, "/contacts/v1/lists/#{id}/contacts/all?count=250&vidOffset=#{offset}&property=email")
           end
 
-        response["contacts"].each do |contact|
-          email = contact.fetch("properties", {}).fetch("email", {}).fetch("value", nil)
-          yield email if email
-        end
+        response = HubspotContactsResponse.new(response)
+        response.each_valid_email { |email| yield email }
+        importer.import_emails_with_metadata(response) if importer
 
-        break unless response["has-more"]
-        offset = Integer(response["vid-offset"])
+        break unless response.has_more?
+        offset = response.vid_offset
       end
 
       logger && logger.debug{ "Done downloading Hubspot Contact List #{id.inspect}" }
+      importer.notify_end_of_response_from_external_service if importer
     end
   end
 end

@@ -21,3 +21,7 @@
 # 1.4.5
 
 * add logic to pull all hubspot emails as a single customer list if the account is a CRM (has no lists)
+
+# 1.4.6
+
+* import hubspot #each_email responses to analytics
