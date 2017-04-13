@@ -17,7 +17,7 @@ module ExternalServiceNew
       contacts.each do |contact|
         next unless has_valid_email?(contact)
 
-        yield contact["properties"]["email"]["value"]
+        yield email(contact)
       end
     end
 
@@ -25,7 +25,7 @@ module ExternalServiceNew
       contacts_with_valid_email.map do |contact|
 
         # Never store emails in clear text
-        email_SHA256 = StringHelpers.normalized_SHA256(contact["properties"]["email"]["value"])
+        email_SHA256 = StringHelpers.normalized_SHA256(email(contact))
         contact["properties"]["email"]["value"] = email_SHA256
 
         [
@@ -43,8 +43,12 @@ module ExternalServiceNew
       contacts.select{ |contact| has_valid_email?(contact) }
     end
 
+    def email(contact)
+      contact.try(:[], "properties").try(:[], "email").try(:[],"value")
+    end
+
     def has_valid_email?(contact)
-      !contact.fetch("properties", {}).fetch("email", {}).fetch("value", nil).nil?
+      email(contact).present?
     end
   end
 end
