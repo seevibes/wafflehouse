@@ -31,5 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'restforce', "= 2.3.0"
   spec.add_dependency 'oj'
   spec.add_dependency 'rest-client'
-  spec.add_dependency 'zendesk_api'
+  spec.add_dependency 'zendesk_api', "= 1.14.4"
 end

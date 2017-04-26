@@ -4,7 +4,7 @@ module ExternalServiceNew
   class BadRequest < RuntimeError ; end
   class Unauthorized < RuntimeError ; end
   class Forbidden < RuntimeError ; end
-  #class NotFound < RuntimeError ; end
+  # class NotFound < RuntimeError ; end
   class RateLimit < RuntimeError ; end
   class ServerError < RuntimeError ; end
   class ServiceUnavailable < RuntimeError ; end
